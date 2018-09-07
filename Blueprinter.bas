@@ -4,6 +4,7 @@
 OPTION BASE 1
 SCREEN 12
 RANDOMIZE TIMER
+OPTION BASE 1
 'I need to store 4 coordinate sets,
 'for use later in constructing interior walls
 'without going out of bounds
@@ -29,24 +30,43 @@ IF Row(1) = Row(3) THEN GOTO WHOOPS:
 LINE (Column(1), Row(1))-(Column(3), Row(3)), , B
 'data
 PRINT "Length:"
-PRINT ABS(Column(1) - Column(3))
+Length% = ABS(Column(1) - Column(3))
+PRINT Length%
 PRINT "Width:"
-PRINT ABS(Row(1) - Row(3))
+Width% = ABS(Row(1) - Row(3))
+PRINT Width%
 PRINT "Ratio:"
-PRINT (ABS(Column(1) - Column(3))) / (ABS(Row(1) - Row(3)))
+Ratio! = ((Column(1) - Column(3))) / (ABS(Row(1) - Row(3)))
+PRINT Ratio!
 'find centers of walls for making interior walls connect
 'Find center of house
-CenterC% = 0
-CenterR% = 0
 CenterC% = INT((ABS(Column(1) + (Column(3)))) / 2)
 CenterR% = INT(ABS(((Row(1) + Row(3)))) / 2)
 'use center
 LINE (CenterC%, Row(1))-(CenterC%, Row(3))
 LINE (Column(1), CenterR%)-(Column(3), CenterR%)
 'doors!
+IF Length% < Width% THEN Door% = INT(Length% / 6)
+IF Width% < Length% THEN Door% = INT(Width% / 6)
+
+DoorL% = INT(Length% / 6)
+DoorW% = INT(Width% / 6)
+
+'CIRCLE (CenterC%, CenterR%), Door%
+'3 of these 4 must happen, 1 must not.
+'This will ensure the house is walkable
+'and will give it a C-shape.
+Layout% = INT(RND * 4) + 1
+IF Layout% <> 1 THEN CIRCLE (CenterC%, CenterR% + (Door% * 2)), Door%
+IF Layout% <> 2 THEN CIRCLE (CenterC%, CenterR% - (Door% * 2)), Door%
+IF Layout% <> 3 THEN CIRCLE (CenterC% + (Door% * 2), CenterR%), Door%
+IF Layout% <> 4 THEN CIRCLE (CenterC% - (Door% * 2), CenterR%), Door%
+
+
+
+
 
 
 
 
 SLEEP
-
